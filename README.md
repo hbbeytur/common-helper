@@ -2,6 +2,23 @@
 
 Common helper utilities.
 
+## Install into any virtual environment
+
+You install a package **into the Python environment that runs `pip`**.
+
+- Activating a venv (`source .venv/bin/activate`) is just a convenience so `python`/`pip` point to that venv.
+- If you prefer not to “activate”, use the venv’s Python explicitly.
+
+Example (recommended):
+
+```bash
+python -m venv .venv
+./.venv/bin/python -m pip install -U pip
+./.venv/bin/python -m pip install -e .
+```
+
+In a future venv you create, run the same pattern (replace the venv path).
+
 ## Install (local development)
 
 ```bash
