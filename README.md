@@ -34,18 +34,18 @@ pip install -e .
 pip install -e ".[plotting]"
 ```
 
-## Install from a private GitHub repo
+## Install from GitHub
 
-SSH:
+HTTPS:
 
 ```bash
-pip install "common-helper @ git+ssh://git@github.com/<ORG_OR_USER>/<REPO>.git"
+pip install "common-helper @ git+https://github.com/hbbeytur/common-helper.git"
 ```
 
-HTTPS (will prompt for credentials / token depending on your setup):
+Optional extra (matplotlib):
 
 ```bash
-pip install "common-helper @ git+https://github.com/<ORG_OR_USER>/<REPO>.git"
+pip install "common-helper[plotting] @ git+https://github.com/hbbeytur/common-helper.git"
 ```
 
 ## Usage
