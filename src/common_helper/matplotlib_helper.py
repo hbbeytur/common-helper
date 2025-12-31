@@ -101,10 +101,51 @@ def load_figure_pickle(path: str | Path) -> Any:
     """
 
     import pickle
+    import matplotlib.pyplot as plt
+    from matplotlib import _pylab_helpers
 
     in_path = Path(path).expanduser()
     with in_path.open("rb") as f:
-        return pickle.load(f)
+        fig = pickle.load(f)
+    
+    # Register the figure with pyplot and make it the current figure so that
+    # plt.title/plt.xlabel/etc operate on the loaded figure.
+    target_num: int = 0
+    if hasattr(fig, "number") and isinstance(getattr(fig, "number"), int):
+        target_num = fig.number
+
+    manager = _pylab_helpers.Gcf.get_fig_manager(target_num)
+
+    # If matplotlib doesn't know about this figure number yet, create a manager
+    # for that number and then attach the unpickled figure to its canvas.
+    if manager is None:
+        plt.figure(num=target_num)  # creates/activates a manager for this num
+        manager = _pylab_helpers.Gcf.get_fig_manager(target_num)
+
+    if manager is not None and getattr(manager, "canvas", None) is not None:
+        canvas = manager.canvas
+
+        # Make pyplot's manager point at the loaded figure
+        canvas.figure = fig
+
+        # Also ensure the figure points back at this canvas (best-effort)
+        if hasattr(fig, "set_canvas"):
+            try:
+                fig.set_canvas(canvas)
+            except Exception:
+                pass
+
+        # Ensure the figure number aligns with the manager (best-effort)
+        if hasattr(fig, "number"):
+            try:
+                fig.number = getattr(manager, "num", target_num)
+            except Exception:
+                pass
+
+        # Make it the current/active figure for pyplot stateful APIs.
+        _pylab_helpers.Gcf.set_active(manager)
+
+    return fig
 
 
 def extract_plot_data_points(fig: Any) -> FigurePlotData:
