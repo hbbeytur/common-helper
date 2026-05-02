@@ -75,6 +75,7 @@ def save_figure_pickle(
     """
 
     import pickle
+    import matplotlib.pyplot as plt
 
     out_path = Path(path).expanduser()
     if mkdir:
@@ -85,6 +86,8 @@ def save_figure_pickle(
 
     with out_path.open("wb") as f:
         pickle.dump(fig, f, protocol=protocol)
+    
+    fig.savefig(str(out_path.with_suffix(".png")), dpi=300)
 
     return out_path
 
@@ -146,6 +149,10 @@ def load_figure_pickle(path: str | Path) -> Any:
         _pylab_helpers.Gcf.set_active(manager)
 
     return fig
+    
+
+    
+
 
 
 def extract_plot_data_points(fig: Any) -> FigurePlotData:
